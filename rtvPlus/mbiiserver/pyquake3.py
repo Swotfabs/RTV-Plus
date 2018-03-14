@@ -19,8 +19,6 @@ Updated for python 3
 import socket
 import re
 
-raise NotImplementedError  # This is not yet usable.
-
 
 class Player:
     def __init__(self, name, frags, ping, address=None, bot=-1):
@@ -56,21 +54,21 @@ class PyQuake3:
         self.s.connect((self.address, self.port))
 
     def get_address(self):
-        return '%s:%s' % (self.address, self.port)
+        return '%s:%s'.format((self.address, self.port))
 
     def set_rcon_password(self, rcon_password):
         self.rcon_password = rcon_password
 
     def send_packet(self, data):
-        self.s.send('%s%s\n' % (self.packet_prefix, data))
+        self.s.send('%s%s\n'.format((self.packet_prefix, data)))
 
     def recv(self, timeout=1):
         self.s.settimeout(timeout)
         try:
             return self.s.recv(4096)
         except socket.error as e:
-            raise Exception('Error receiving the packet: %s' %
-                            e[1])
+            raise Exception('Error receiving the packet: %s'.format(
+                            e[1]))
 
     def command(self, cmd, timeout=1, retries=3):
         while retries:
@@ -85,7 +83,7 @@ class PyQuake3:
         raise Exception('Server response timed out')
 
     def rcon(self, cmd):
-        r = self.command('rcon "%s" %s' % (self.rcon_password, cmd))
+        r = self.command('rcon "%s" %s'.format((self.rcon_password, cmd)))
         if r[1] == 'No rconpassword set on the server.\n' or r[1] == \
                 'Bad rconpassword.\n':
             raise Exception(r[1][:-1])
@@ -98,7 +96,7 @@ class PyQuake3:
         if first_line_length == -1:
             raise Exception('Malformed packet')
         response_type = data[len(self.packet_prefix):first_line_length]
-        response_data = data[first_line_length+1:]
+        response_data = data[first_line_length + 1:]
         return response_type, response_data
 
     def parse_status(self, data):
@@ -149,12 +147,12 @@ class PyQuake3:
 if __name__ == '__main__':
     q = PyQuake3('localhost:27960', 'hello')
     q.update()
-    print('The name of %s is %s, running map %s with %s player(s).' %
+    print('The name of %s is %s, running map %s with %s player(s).'.format(
           (q.get_address(), q.vars['sv_hostname'],
-           q.vars['mapname'], len(q.players)))
+           q.vars['mapname'], len(q.players))))
     for player in q.players:
-        print('%s with %s frags and a %sms ping' % (player.name,
-                                                    player.frags, player.ping))
+        print('%s with %s frags and a %sms ping'.format(
+            (player.name, player.frags, player.ping)))
     q.rcon_update()
     for player in q.players:
-        print('%s has an address of %s' % (player.name, player.address))
+        print('%s has an address of %s'.format((player.name, player.address)))
