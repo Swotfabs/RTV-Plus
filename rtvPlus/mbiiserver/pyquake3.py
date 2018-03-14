@@ -40,7 +40,7 @@ class PyQuake3:
     player_reo = re.compile(r'^(\d+) (\d+) "(.*)"')
 
     def __init__(self, server, rcon_password=''):
-        self.s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.set_server(server)
         self.set_rcon_password(rcon_password)
 
@@ -48,27 +48,27 @@ class PyQuake3:
         try:
             self.address, self.port = server.split(':')
         except ValueError:
-            raise Exception('Server address must be in the format of \
+            raise ValueError('Server address must be in the format of \
                     "address:port"')
         self.port = int(self.port)
-        self.s.connect((self.address, self.port))
+        self.socket.connect((self.address, self.port))
 
     def get_address(self):
-        return '%s:%s'.format((self.address, self.port))
+        return '{}:{}'.format(self.address, self.port)
 
     def set_rcon_password(self, rcon_password):
         self.rcon_password = rcon_password
 
     def send_packet(self, data):
-        self.s.send('%s%s\n'.format((self.packet_prefix, data)))
+        self.socket.send('{}{}\n'.format(self.packet_prefix, data).encode())
 
     def recv(self, timeout=1):
-        self.s.settimeout(timeout)
+        self.socket.settimeout(timeout)
         try:
-            return self.s.recv(4096)
-        except socket.error as e:
-            raise Exception('Error receiving the packet: %s'.format(
-                            e[1]))
+            return self.socket.recv(4096)
+        except socket.error as exception:
+            print('Error receiving the packet: {}'.format(exception))
+            raise
 
     def command(self, cmd, timeout=1, retries=3):
         while retries:
@@ -83,7 +83,7 @@ class PyQuake3:
         raise Exception('Server response timed out')
 
     def rcon(self, cmd):
-        r = self.command('rcon "%s" %s'.format((self.rcon_password, cmd)))
+        r = self.command('rcon "{}" {}'.format(self.rcon_password, cmd))
         if r[1] == 'No rconpassword set on the server.\n' or r[1] == \
                 'Bad rconpassword.\n':
             raise Exception(r[1][:-1])
@@ -147,12 +147,12 @@ class PyQuake3:
 if __name__ == '__main__':
     q = PyQuake3('localhost:27960', 'hello')
     q.update()
-    print('The name of %s is %s, running map %s with %s player(s).'.format(
-          (q.get_address(), q.vars['sv_hostname'],
-           q.vars['mapname'], len(q.players))))
+    print('The name of {} is {}, running map {} with {} player(s).'.format(
+          q.get_address(), q.vars['sv_hostname'],
+          q.vars['mapname'], len(q.players)))
     for player in q.players:
-        print('%s with %s frags and a %sms ping'.format(
-            (player.name, player.frags, player.ping)))
+        print('{} with {} frags and a {}ms ping'.format(
+            player.name, player.frags, player.ping))
     q.rcon_update()
     for player in q.players:
-        print('%s has an address of %s'.format((player.name, player.address)))
+        print('{} has an address of {}'.format(player.name, player.address))
