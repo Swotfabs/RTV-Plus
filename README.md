@@ -1,7 +1,7 @@
 # RTV-Plus
 An overhaul and improvement on Rock The Vote
 
-# Attribution
+## Attribution
 - Inspiration
     - Rock the Vote [insert creator's name]
 - Code Resources
