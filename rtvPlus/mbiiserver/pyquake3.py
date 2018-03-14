@@ -68,7 +68,7 @@ class PyQuake3:
         self.s.settimeout(timeout)
         try:
             return self.s.recv(4096)
-        except socket.error, e:
+        except socket.error as e:
             raise Exception('Error receiving the packet: %s' %
                             e[1])
 
@@ -77,7 +77,7 @@ class PyQuake3:
             self.send_packet(cmd)
             try:
                 data = self.recv(timeout)
-            except:
+            except socket.error:
                 data = None
             if data:
                 return self.parse_packet(data)
