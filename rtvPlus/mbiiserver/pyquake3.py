@@ -43,6 +43,7 @@ class PyQuake3:
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.set_server(server)
         self.set_rcon_password(rcon_password)
+        self.players = []
 
     def set_server(self, server):
         try:
@@ -142,17 +143,3 @@ class PyQuake3:
                 continue
             p = p.split(' ')
             self.players.append(Player(p[3][:-2], p[0], p[1], p[5], p[6]))
-
-
-if __name__ == '__main__':
-    q = PyQuake3('localhost:27960', 'hello')
-    q.update()
-    print('The name of {} is {}, running map {} with {} player(s).'.format(
-          q.get_address(), q.vars['sv_hostname'],
-          q.vars['mapname'], len(q.players)))
-    for player in q.players:
-        print('{} with {} frags and a {}ms ping'.format(
-            player.name, player.frags, player.ping))
-    q.rcon_update()
-    for player in q.players:
-        print('{} has an address of {}'.format(player.name, player.address))
