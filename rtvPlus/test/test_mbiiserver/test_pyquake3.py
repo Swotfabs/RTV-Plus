@@ -12,9 +12,9 @@ class TestSetServer(TestCase):
     """
 
     def setUp(self):
-        patcher = patch("socket.socket")
-        self.addCleanup(patcher.stop)
-        self.mock_socket = patcher.start()
+        socket_patcher = patch("socket.socket")
+        self.addCleanup(socket_patcher.stop)
+        self.mock_socket = socket_patcher.start()
 
         server = "127.0.0.1:22"
         self.py = PyQuake3(server)
