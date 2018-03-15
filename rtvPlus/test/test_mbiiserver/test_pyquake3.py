@@ -2,7 +2,8 @@
 """
 
 from unittest import TestCase
-# import rtvPlus.mbiiserver.pyquake3 as pyquake3
+from unittest.mock import patch
+from rtvPlus.mbiiserver.pyquake3 import PyQuake3
 
 
 class TestSetServer(TestCase):
@@ -11,10 +12,23 @@ class TestSetServer(TestCase):
     """
 
     def setUp(self):
-        pass
+        patcher = patch("socket.socket")
+        self.addCleanup(patcher.stop)
+        self.mock_socket = patcher.start()
 
-    def test_fail(self):
-        self.assertTrue(False)
+        server = "127.0.0.1:22"
+        self.py = PyQuake3(server)
+
+    def test_set_server(self):
+        server = "127.0.0.2:23"
+        self.py.set_server(server)
+        self.assertEqual(self.py.port, 23)
+        self.assertEqual(self.py.address, "127.0.0.2")
+
+    def test_set_server_invalid(self):
+        server = "Invalid"
+        with self.assertRaises(ValueError):
+            self.py.set_server(server)
 
     def tearDown(self):
         pass
