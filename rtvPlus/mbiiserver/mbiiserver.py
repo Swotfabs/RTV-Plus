@@ -2,7 +2,7 @@
 Number of players, what map it is on, etcetera.
 
 """
-from PyQuake3 import PyQuake3
+from .pyquake3 import PyQuake3
 
 
 class mbiiserver:
