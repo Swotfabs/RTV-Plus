@@ -16,7 +16,7 @@ class TestSetServer(TestCase):
         self.addCleanup(socket_patcher.stop)
         self.mock_socket = socket_patcher.start()
 
-        server = "Default"
+        server = "127.0.0.0:25"
         self.py = PyQuake3(server)
 
     def test_set_server(self):
@@ -27,6 +27,16 @@ class TestSetServer(TestCase):
 
     def test_set_server_invalid(self):
         server = "Invalid"
+        with self.assertRaises(ValueError):
+            self.py.set_server(server)
+
+    def test_set_server_malformed_ip(self):
+        server = "malformed:22"
+        with self.assertRaises(ValueError):
+            self.py.set_server(server)
+
+    def test_set_server_malformed_port(self):
+        server = "127.0.0.2:malformed"
         with self.assertRaises(ValueError):
             self.py.set_server(server)
 
