@@ -21,8 +21,8 @@ class RTVPrompt(Cmd):
             print("You must first connect to a server")
             return
         try:
-            cmd, data = self.mbiiserver.server.rcon(line)
-            print(data)
+            response_type, response_data = self.mbiiserver.server.rcon(line)
+            print(response_data)
         except Exception as e:
             print(e)
 
@@ -48,14 +48,14 @@ class RTVPrompt(Cmd):
         """Returns whether the prompt is connected and
         the status of the server"""
         if self.mbiiserver:
-            print("Currently Connected to {}".format(
-                self.mbiiserver.server.address))
-            print("On Port {}".format(self.mbiiserver.server.port))
-            print("With rcon password {}".format(
-                self.mbiiserver.server.rcon_password))
+            print("Currently Connected to {} on port {} with rcon password {}"
+                  .format(self.mbiiserver.server.address,
+                          self.mbiiserver.server.port,
+                          self.mbiiserver.server.rcon_password))
             try:
-                cmd, data = self.mbiiserver.server.rcon("status")
-                print(data)
+                response_type, response_data = self.mbiiserver.server.rcon(
+                    "status")
+                print(response_data)
             except Exception as e:
                 print(e)
         else:
