@@ -20,7 +20,11 @@ class RTVPrompt(Cmd):
         if not self.mbiiserver:
             print("You must first connect to a server")
             return
-        print(self.mbiiserver.server.rcon(line))
+        try:
+            cmd, data = self.mbiiserver.server.rcon(line)
+            print(data)
+        except Exception as e:
+            print(e)
 
     def do_connect(self, line):
         """Connect to an MBII Server
@@ -34,12 +38,10 @@ class RTVPrompt(Cmd):
     def do_disconnect(self, line):
         """Disconnects from the server"""
         if not self.mbiiserver:
-            try:
-                print("Not currently connected to a server")
-            except Exception as e:
-                print(e)
+            print("Not currently connected to a server")
         else:
             print("Disconnecting")
+            self.mbiiserver.server.socket.close()
             self.mbiiserver = None
 
     def do_status(self, line):
@@ -52,11 +54,20 @@ class RTVPrompt(Cmd):
             print("With rcon password {}".format(
                 self.mbiiserver.server.rcon_password))
             try:
-                print(self.mbiiserver.server.rcon("status"))
+                cmd, data = self.mbiiserver.server.rcon("status")
+                print(data)
             except Exception as e:
                 print(e)
         else:
             print("Not currently connected to a server")
+
+    def do_exit(self, line):
+        """Closes the socket and exits the prompt"""
+        if self.mbiiserver:
+            print("Closing Socket")
+            self.mbiiserver.server.socket.close()
+        print("Exiting Prompt")
+        return True
 
 
 if __name__ == "__main__":
