@@ -62,7 +62,6 @@ class PyQuake3:
 
     def send_packet(self, data):
         packet = '{}{}\n'.format(self.packet_prefix, data).encode('ISO-8859-1')
-        print(packet)
         self.socket.send(packet)
 
     def recv(self, timeout=1):
@@ -93,7 +92,6 @@ class PyQuake3:
         return r
 
     def parse_packet(self, data):
-        print(data)
         data = data.decode('ISO-8859-1')
         if data.find(self.packet_prefix) != 0:
             raise Exception('Malformed packet')
