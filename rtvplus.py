@@ -34,8 +34,12 @@ class RTVPrompt(Cmd):
     def do_disconnect(self, line):
         """Disconnects from the server"""
         if not self.mbiiserver:
-            print("Not currently connected to a server")
+            try:
+                print("Not currently connected to a server")
+            except Exception as e:
+                print(e)
         else:
+            print("Disconnecting")
             self.mbiiserver = None
 
     def do_status(self, line):
@@ -44,7 +48,13 @@ class RTVPrompt(Cmd):
         if self.mbiiserver:
             print("Currently Connected to {}".format(
                 self.mbiiserver.server.address))
-            print(self.mbiiserver.server.rcon("status"))
+            print("On Port {}".format(self.mbiiserver.server.port))
+            print("With rcon password {}".format(
+                self.mbiiserver.server.rcon_password))
+            try:
+                print(self.mbiiserver.server.rcon("status"))
+            except Exception as e:
+                print(e)
         else:
             print("Not currently connected to a server")
 

@@ -61,7 +61,9 @@ class PyQuake3:
         self.rcon_password = rcon_password
 
     def send_packet(self, data):
-        self.socket.send('{}{}\n'.format(self.packet_prefix, data).encode())
+        packet = '{}{}\n'.format(self.packet_prefix, data).encode('ISO-8859-1')
+        print(packet)
+        self.socket.send(packet)
 
     def recv(self, timeout=1):
         self.socket.settimeout(timeout)
@@ -84,13 +86,15 @@ class PyQuake3:
         raise Exception('Server response timed out')
 
     def rcon(self, cmd):
-        r = self.command('rcon "{}" {}'.format(self.rcon_password, cmd))
+        r = self.command('rcon {} {}'.format(self.rcon_password, cmd))
         if r[1] == 'No rconpassword set on the server.\n' or r[1] == \
                 'Bad rconpassword.\n':
             raise Exception(r[1][:-1])
         return r
 
     def parse_packet(self, data):
+        print(data)
+        data = data.decode('ISO-8859-1')
         if data.find(self.packet_prefix) != 0:
             raise Exception('Malformed packet')
         first_line_length = data.find('\n')
