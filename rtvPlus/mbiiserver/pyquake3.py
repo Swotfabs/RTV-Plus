@@ -1,4 +1,7 @@
 """Python Quake 3 Library
+
+Updated to work with Python 3 by Fabian Junge
+
 http://misc.slowchop.com/misc/wiki/pyquake3
 Copyright (C) 2006-2007 Gerald Kaszuba
 This program is free software; you can redistribute it and/or
@@ -12,8 +15,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-
-Updated for python 3
 """
 
 import socket
