@@ -15,6 +15,14 @@ class RTVPrompt(Cmd):
         super().__init__()
         self.mbiiserver = None
 
+    def cmdloop(self, intro=None):
+        try:
+            super().cmdloop(intro)
+            return
+        except KeyboardInterrupt as keyError:
+            print("\nExiting due to Ctr-C")
+            self.do_exit("")
+
     def do_rcon(self, line):
         """Sends an rcon command to the server"""
         if not self.mbiiserver:
@@ -68,6 +76,9 @@ class RTVPrompt(Cmd):
             self.mbiiserver.server.socket.close()
         print("Exiting Prompt")
         return True
+
+    def emptyline(self):
+        pass
 
 
 if __name__ == "__main__":
