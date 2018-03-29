@@ -21,7 +21,7 @@ class RTVPrompt(Cmd):
             return
         except KeyboardInterrupt as keyError:
             print("\nExiting due to Ctr-C")
-            self.do_exit("")
+            self.postloop()
 
     def do_rcon(self, line):
         """Sends an rcon command to the server"""
@@ -70,15 +70,19 @@ class RTVPrompt(Cmd):
             print("Not currently connected to a server")
 
     def do_exit(self, line):
+        """Closes the socket and exits the prompt
+        Offloads the work to postloop"""
+        return True
+
+    def emptyline(self):
+        pass
+
+    def postloop(self):
         """Closes the socket and exits the prompt"""
         if self.mbiiserver:
             print("Closing Socket")
             self.mbiiserver.server.socket.close()
         print("Exiting Prompt")
-        return True
-
-    def emptyline(self):
-        pass
 
 
 if __name__ == "__main__":
