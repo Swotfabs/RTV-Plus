@@ -5,6 +5,7 @@ It is currently empty.
 
 from cmd import Cmd
 import argparse
+import time
 from rtvPlus.mbiiserver.mbiiserver import mbiiserver
 
 
@@ -115,7 +116,8 @@ def add_arguments(parser):
                               " prefix with 'rcon'"))
     parser.add_argument('--retries', '-ret', default=1,
                         help=("in command mode, the number of times"
-                              " to attempt sending the command. The default is 1"))
+                              " to attempt sending the command. The default"
+                              " is 1"))
 
 
 def main():
@@ -141,13 +143,15 @@ def main():
             print("You must set the server and the password for command mode")
             return
         server = mbiiserver(args.server, args.rconpassword)
-        while args.retries:
+        while args.retries > 0:
             try:
                 response_type, response_data = server.server.rcon(args.command)
                 print(response_data)
             except Exception as e:
                 print(e)
             finally:
+                if args.retries > 0:
+                    time.sleep(1)
                 args.retries -= 1
 
 
