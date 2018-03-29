@@ -4,6 +4,7 @@ It is currently empty.
 """
 
 from cmd import Cmd
+import argparse
 from rtvPlus.mbiiserver.mbiiserver import mbiiserver
 
 
@@ -85,9 +86,21 @@ class RTVPrompt(Cmd):
         print("Exiting Prompt")
 
 
+def add_arguments(parser):
+    parser.add_argument('mode', choices=['cmd', 'rcon'], help=(
+            "cmd launches a command line interface,"
+            " rcon sends one command to the server"))
+    pass
+
+
 if __name__ == "__main__":
-    prompt = RTVPrompt()
-    prompt.prompt = "> "
-    prompt.cmdloop("Starting prompt...")
+    parser = argparse.ArgumentParser(
+        description="A tool to communicate with a pyquake3 server via rcon")
+    add_arguments(parser)
+    args = parser.parse_args()
+    print(args)
+    # prompt = RTVPrompt()
+    # prompt.prompt = "> "
+    # prompt.cmdloop("Starting prompt...")
 else:
-    raise NotImplementedError  # This is not yet usable.
+    raise NotImplementedError  # This module is not intedned to be imported
