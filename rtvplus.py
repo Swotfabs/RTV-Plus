@@ -114,7 +114,7 @@ def add_arguments(parser):
     parser.add_argument('--command', '-com',
                         help=("The command to send to the server, do not"
                               " prefix with 'rcon'"))
-    parser.add_argument('--retries', '-ret', default=1,
+    parser.add_argument('--retries', '-ret', default=1, type=int,
                         help=("in command mode, the number of times"
                               " to attempt sending the command. The default"
                               " is 1"))
@@ -149,10 +149,11 @@ def main():
                 print(response_data)
             except Exception as e:
                 print(e)
-            finally:
                 if args.retries > 0:
                     time.sleep(1)
                 args.retries -= 1
+            else:
+                args.retries = 0
 
 
 if __name__ == "__main__":
