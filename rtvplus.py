@@ -111,7 +111,7 @@ def add_arguments(parser):
                         help="the server to connect to in the form of ip:port")
     parser.add_argument('--rconpassword', '-rcon',
                         help="the rcon password for the server")
-    parser.add_argument('--command', '-com',
+    parser.add_argument('--command', '-com', nargs='+',
                         help=("The command to send to the server, do not"
                               " prefix with 'rcon'"))
     parser.add_argument('--retries', '-ret', default=1, type=int,
@@ -142,8 +142,13 @@ def main():
         if not args.server and args.rconpassword and args.command:
             print("You must set the server and the password for command mode")
             return
+        args.command = " ".join(args.command)
         server = mbiiserver(args.server, args.rconpassword)
+        print("Sending command: {}".format(args.command))
+        attempts = 1
         while args.retries > 0:
+            print("Attempt number {}".format(attempts))
+            attempts += 1
             try:
                 response_type, response_data = server.server.rcon(args.command)
                 print(response_data)
@@ -154,6 +159,7 @@ def main():
                 args.retries -= 1
             else:
                 args.retries = 0
+        server.server.socket.close()
 
 
 if __name__ == "__main__":
